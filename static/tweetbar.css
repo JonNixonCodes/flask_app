@@ -1,0 +1,26 @@
+.tweetbar ul {
+    width: 100%;
+    list-style-type: none;
+    margin: 5px;
+    padding: 5px;
+    font-size: 20px;
+}
+
+.tweetbar .active  {
+    background-color: #f3f3f3;
+    color: white;
+}
+
+.tweetbar li {
+    border: 1px solid #555;
+    margin: 5px;
+    padding: 5px;
+}
+
+.tweetbar li a {
+    display: block;
+}
+
+.tweetbar li a:hover {
+    background-color: #111;
+}

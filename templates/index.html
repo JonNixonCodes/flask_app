@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sentweetment App</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>  
+  <link rel="stylesheet" type="text/css"  href="{{url_for('static', filename='justified-nav.css')}}">
+  <link rel="stylesheet" type="text/css"  href="{{url_for('static', filename='tweetbar.css')}}">  
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">    
+</head>
+
+<body>
+  <div class="container">
+    <!-- Query Jumbotron -->
+    <div class="jumbotron">
+      <h1>Sentweetment App</h1>
+      <form>
+	Query: 
+	<input type="search" name="query" {%if query %}value={{query}} {% endif %}>
+	<button type="submit" class="btn btn-success">Search</button>
+      </form>
+    </div>
+
+    <!-- Graph -->
+    <div class="row">
+      <div class="col-xs-8 col-xs-offset-2">
+	<h2>Sentiment Plot</h2>
+	<nav>
+	  <div class="navbar">
+	    <ul>
+	      <li><a href="#">10s
+	      <li><a href="#">1min
+	      <li><a href="#">1hr
+	      <li><a href="#">24hr
+	    </ul>
+	  </div>
+	</nav>
+	<p align="center">
+	  <button id="update" class="btn btn-lg btn-success">Update the Chart!</button>
+	</p>
+	<div class="ct-chart ct-perfect-fourth"></div>
+<script>
+var myChart;
+var getData = $.get('/data');
+
+// graph only created when data is loaded
+getData.done(function(results) {
+
+  var data = {
+  // A labels array that can contain any sort of values
+    labels: results.xs,
+  // Our series array that contains series objects or in this case series data arrays
+    series: [
+      results.yi
+    ]
+  };
+
+  var options = {
+    height: 500
+  };
+
+  // Create a new line chart object where as first parameter we pass in a selector
+  // that is resolving to our chart container element. The Second parameter
+  // is the actual data object.
+  myChart = new Chartist.Line('.ct-chart', data, options);
+
+});
+
+function updateChart() {
+  var updatedData = $.get('/data');
+  updatedData.done(function(results) {
+
+    var data = {
+      // A labels array that can contain any sort of values
+      labels: results.xs,
+      // Our series array that contains series objects or in this case series data arrays
+      series: [
+        results.yi
+      ]
+    };
+  
+    myChart.update(data);
+
+  });
+}
+
+$("#update").on('click', updateChart);
+
+</script>
+      </div>
+    </div>
+
+      <!-- Tweets -->
+      <div class="row">
+	<div class="col-xs-8 col-xs-offset-2">
+	  <div class="tweetbar">
+	    <h2>Most Informative Tweets:</h2>
+	    <ul>
+	      <li>Tweet1
+	      <li>Tweet2
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+    </div>
+</body>

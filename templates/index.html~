@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sentweetment App</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css"  href="{{url_for('static', filename='justified-nav.css')}}">
+  <link rel="stylesheet" type="text/css"  href="{{url_for('static', filename='tweetbar.css')}}">  
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">    
+</head>
+
+<body>
+  <div class="container">
+    <!-- Query Jumbotron -->
+    <div class="jumbotron">
+      <h1>Sentweetment App</h1>
+      <form>
+	Query: 
+	<input type="search" name="query" {%if query %}value={{query}} {% endif %}>
+	<button type="submit" class="btn btn-success">Search</button>
+      </form>
+      <p><a class="btn btn-lg btn-success" href="#" role="button">Update Chart!</a></p>	  
+    </div>
+
+    <!-- Graph -->
+    <div class="row">
+      <div class="col-xs-8 col-xs-offset-2">
+	<h2>Sentiment Plot</h2>
+	<nav>
+	  <div class="navbar">
+	    <ul>
+	      <li><a href="#">10s
+	      <li><a href="#">1min
+	      <li><a href="#">1hr
+	      <li><a href="#">24hr
+	    </ul>
+	  </div>
+	</nav>
+      </div>
+    </div>
+
+      <!-- Tweets -->
+      <div class="row">
+	<div class="col-xs-8 col-xs-offset-2">
+	  <div class="tweetbar">
+	    <h2>Most Informative Tweets:</h2>
+	    <ul>
+	      <li>Tweet1
+	      <li>Tweet2
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+    </div>
+</body>
