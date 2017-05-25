@@ -5,9 +5,13 @@ app = Flask(__name__)
 
 import subprocess
 import time
+import pickle
+
 #declare global subprocess variable
 p1 = None
 p2 = None
+
+
 """
 Generate subprocess
 Create twitter stream to file
@@ -21,12 +25,14 @@ def SubProcessTweets(query_id, query):
     p2 = subprocess.Popen(args2)
     return (p1, p2)
 
+
 def TerminateSubProcess(p1, p2):
     p1.terminate()
     p2.terminate()
     
 #list of queries
 queries = []
+
 
 """
 Render index.html
@@ -35,6 +41,7 @@ Render index.html
 @app.route('/index')
 def index():
     return render_template('index.html')
+
 
 """
 query id to access URL for graph data
@@ -47,6 +54,7 @@ def searchId(query_id):
     else:
         return redirect(url_for('index'))
 
+    
 """
 Handle POST request from user submitting query
 intialise tweet streaming and processing
@@ -73,6 +81,7 @@ def search():
         return render_template('index.html', query=query, query_id=query_id)
     else:
         return redirect(url_for('index'))
+
     
 """
 Collect data for graph
@@ -95,15 +104,51 @@ def data(query_id=0, timeline='sec'):
     except(IOError):
         print('Error: No graph data found')
         return jsonify({'xs' : [], 'yi' : []})
-    lines = graph_data.split('\n')
     xs = []
-    ys = []
+    y1s = [] #positive average sentiment
+    y2s = [] #negative average sentiment
+    y3s = [] #average sentiment
+    tb1 = [] #polarity
+    tb2 = [] #prevalence
+    tb3 = [] #influence
+    tweet_data = [] #most subjective tweets
+    try:
+        f = open('{}_sec_tweets.pickle'.format(query_id), 'rb')
+        tweet_data = pickle.load(f)
+        print(tweet_data)
+        f.close()
+    except:
+        pass
+    
+    lines = graph_data.split('\n')            
     for line in lines:
         if len(line) > 1:
-            x, y, z = line.split(',')
-            #xs.append(int(x))
-            ys.append(int(y))
-    return jsonify({'xs' : range(1,11), 'yi' : ys[-10:]})
+            y1, y2, y3, polarity, prevalence, influence = line.split(',')[:6]
+            tb1.append(int(polarity))
+            tb2.append(int(prevalence))
+            tb3.append(int(influence))
+            if int(y2) != 0:
+                y1s.append(int(y1))
+            else:
+                y1s.append(None)                
+            if int(y2) != 0:
+                y2s.append(int(y2))
+            else:
+                y2s.append(None)
+            if int(y3) != 0:
+                y3s.append(int(y3))
+            else:
+                y3s.append(None)
+                
+    return jsonify({'xs' : range(1,11),
+                    'y1i' : y1s[-10:],
+                    'y2i' : y2s[-10:],
+                    'y3i' : y3s[-10:],                    
+                    'tb1' : tb1[-10:],
+                    'tb2' : tb2[-10:],
+                    'tb3' : tb3[-10:],
+                    'tweets' : tweet_data[-5:],
+                })
 
 """
 start server
